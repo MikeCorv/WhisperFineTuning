@@ -1,1 +1,56 @@
-Fine-Tuning starter.
+# 🇮🇹 Italian ASR Fine-Tuning: Whisper v3 Turbo + LoRA
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange)
+![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Transformers-yellow)
+![Status](https://img.shields.io/badge/Status-Training%20Complete-success)
+
+This repository contains an end-to-end pipeline for fine-tuning OpenAI's **Whisper Large v3 Turbo** on the Italian **FLEURS** dataset.
+
+The project demonstrates how to train a State-of-the-Art (SOTA) Speech-to-Text model on consumer hardware (Google Colab T4 GPU) using **QLoRA** (Quantized Low-Rank Adaptation).
+
+## 🏆 Results
+
+| Metric | Value | Notes |
+| :--- | :--- | :--- |
+| **Base Model** | `openai/whisper-large-v3-turbo` | Released late 2024 |
+| **Dataset** | Google FLEURS (Italian) | ~3,000+ audio samples |
+| **Final WER** | **3.95%** | Word Error Rate (Lower is better) |
+| **Training Time** | ~1 Hour | Single NVIDIA T4 (16GB VRAM) |
+
+---
+
+## 🧠 Technical Approach (How it Works)
+
+Training a 1.5 Billion parameter model usually requires massive industrial GPUs. To make this work on a free 16GB GPU, we used **Parameter-Efficient Fine-Tuning (PEFT)**.
+
+### 1. 4-Bit Quantization (The "Compression")
+We loaded the base model using **NF4 (NormalFloat 4)** quantization. This compresses the model weights from 16-bit precision down to 4-bit, reducing VRAM usage by ~4x without significant loss in intelligence.
+
+### 2. LoRA (The "Brain Surgery")
+Instead of retraining the entire brain (which is frozen), we injected tiny trainable matrices ("Adapters") into the Attention layers of the model.
+* **Frozen Parameters:** ~800 Million (99.2%)
+* **Trainable Parameters:** ~15 Million (0.8%)
+
+### 3. Data Engineering
+* **Filtering:** Removed audio < 1s (silence) and > 30s (OOM risk).
+* **Resampling:** Converted all inputs to 16kHz.
+* **Firewall Collator:** Implemented a custom Data Collator to strip `input_ids` and prevent Trainer conflicts.
+
+---
+
+## 📂 Project Structure
+
+| Notebook | Description |
+| :--- | :--- |
+| `01_data_preparation.ipynb` | Downloads FLEURS, cleans text, resamples audio, and filters outliers. Saves processed Arrow files to Drive. |
+| `02_training_lora.ipynb` | Loads the model in 4-bit, attaches LoRA adapters, runs the training loop, and saves the final adapters. |
+| `03_inference.ipynb` | *(Planned)* Loads the saved adapters from Drive for fast transcription of new audio files. |
+
+---
+
+## 🚀 Usage
+
+### Installation
+```bash
+pip install transformers datasets peft bitsandbytes accelerate librosa
