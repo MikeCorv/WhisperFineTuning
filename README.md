@@ -5,7 +5,7 @@
 ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Transformers-yellow)
 ![Status](https://img.shields.io/badge/Status-Training%20Complete-success)
 
-This repository contains an end-to-end pipeline for fine-tuning OpenAI's **Whisper Large v3 Turbo** on the Italian **FLEURS** dataset.
+This repository contains an end-to-end pipeline for fine-tuning OpenAI's **Whisper Large v3 Turbo** on the Italian **FLEURS** dataset (Available on HuggingFace here: https://huggingface.co/datasets/google/fleurs).
 
 The project demonstrates how to train a State-of-the-Art (SOTA) Speech-to-Text model on consumer hardware (Google Colab T4 GPU) using **QLoRA** (Quantized Low-Rank Adaptation).
 
@@ -15,19 +15,19 @@ The project demonstrates how to train a State-of-the-Art (SOTA) Speech-to-Text m
 | :--- | :--- | :--- |
 | **Base Model** | `openai/whisper-large-v3-turbo` | Released late 2024 |
 | **Dataset** | Google FLEURS (Italian) | ~3,000+ audio samples |
-| **Final WER** | **3.95%** | Word Error Rate (Lower is better) |
-| **Training Time** | ~1 Hour | Single NVIDIA T4 (16GB VRAM) |
+| **Final WER** | **3.95%** | Word Error Rate|
+| **Training Time** | ~1 Hour | Single NVIDIA T4 (Available on Colab for free) |
 
 ---
 
-## 🧠 Technical Approach (How it Works)
+## 🧠 Technical Approach
 
-Training a 1.5 Billion parameter model usually requires massive industrial GPUs. To make this work on a free 16GB GPU, we used **Parameter-Efficient Fine-Tuning (PEFT)**.
+Training a 1.5 Billion parameter model usually requires massive industrial GPUs. To make this work on a free 16GB GPU, **Parameter-Efficient Fine-Tuning (PEFT)** was necessary. More details here: https://huggingface.co/blog/peft.
 
-### 1. 4-Bit Quantization (The "Compression")
-We loaded the base model using **NF4 (NormalFloat 4)** quantization. This compresses the model weights from 16-bit precision down to 4-bit, reducing VRAM usage by ~4x without significant loss in intelligence.
+### 1. 4-Bit Quantization
+The base model has been loaded using **NF4 (NormalFloat 4)** quantization. This compresses the model weights from 16-bit precision down to 4-bit, reducing VRAM usage by ~4x without significant loss in intelligence.
 
-### 2. LoRA (The "Brain Surgery")
+### 2. LoRA
 Instead of retraining the entire brain (which is frozen), we injected tiny trainable matrices ("Adapters") into the Attention layers of the model.
 * **Frozen Parameters:** ~800 Million (99.2%)
 * **Trainable Parameters:** ~15 Million (0.8%)
@@ -43,13 +43,15 @@ Instead of retraining the entire brain (which is frozen), we injected tiny train
 
 | Notebook | Description |
 | :--- | :--- |
-| `01_data_preparation.ipynb` | Downloads FLEURS, cleans text, resamples audio, and filters outliers. Saves processed Arrow files to Drive. |
-| `02_training_lora.ipynb` | Loads the model in 4-bit, attaches LoRA adapters, runs the training loop, and saves the final adapters. |
-| `03_inference.ipynb` | *(Planned)* Loads the saved adapters from Drive for fast transcription of new audio files. |
+| `GoogleFleursAudio.ipynb` | Downloads FLEURS, cleans text, resamples audio, and filters outliers. Saves processed Arrow files to Drive. |
+| `WHISPERV3TURBOFINETUNING.ipynb` | Loads the model in 4-bit, attaches LoRA adapters, runs the training loop, and saves the final adapters. |
+| `testing.ipynb` | *(Planned)* Loads the saved adapters from Drive for fast transcription of new audio files. |
 
 ---
 
 ## 🚀 Usage
+
+(NOTE: you may require other libraries, check the notebooks.)
 
 ### Installation
 ```bash
