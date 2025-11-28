@@ -5,7 +5,7 @@
 ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Transformers-yellow)
 ![Status](https://img.shields.io/badge/Status-Training%20Complete-success)
 
-This repository contains an end-to-end pipeline for fine-tuning OpenAI's **Whisper Large v3 Turbo** on the Italian **FLEURS** dataset (Available on HuggingFace [here](https://huggingface.co/datasets/google/fleurs)
+This repository contains an end-to-end pipeline for fine-tuning OpenAI's **Whisper Large v3 Turbo** on the Italian **FLEURS** dataset (Available on HuggingFace [here](https://huggingface.co/datasets/google/fleurs))
 
 The project demonstrates how to train a State-of-the-Art (SOTA) Speech-to-Text model on consumer hardware (Google Colab T4 GPU) using **QLoRA** (Quantized Low-Rank Adaptation).
 
