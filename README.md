@@ -17,7 +17,7 @@ The project demonstrates how to train a State-of-the-Art (SOTA) Speech-to-Text m
 | :--- | :--- | :--- |
 | **Base Model** | `openai/whisper-large-v3-turbo` | Released late 2024 |
 | **Dataset** | Google FLEURS (Italian) | ~3,000+ audio samples |
-| **Final WER** | **3.95%** | Word Error Rate|
+| **Final WER** | **3.95%** | [Word Error Rate](https://huggingface.co/spaces/evaluate-metric/wer)|
 | **Training Time** | ~1 Hour | Single NVIDIA T4 (Available on Colab for free) |
 
 ---
